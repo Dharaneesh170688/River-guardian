@@ -46,6 +46,8 @@ The system never jumps straight from detection to alarm — it escalates deliber
 
 🖥️ Two Dashboards, Two Audiences
 
+![image alt](https://github.com/Dharaneesh170688/River-guardian/blob/00890e71c083f75a7ce38e756191ba8a090a3941/WhatsApp%20Image%202026-07-12%20at%2010.46.26%20AM.jpeg)
+
 DashboardAudienceFocusCommand Center (dashboard/app.py, port 8501)Judges / technical reviewFull telemetry, 3D pose visualization, trust-score breakdown, GenieX reasoningRescue Operations Center (dashboard/rescue_app.py, port 8502)Field first respondersLightweight, high-contrast, action-only view — live incident log, nothing else
 
 This split matters for the user-experience story: a swimmer's life doesn't depend on a responder parsing a dense engineering dashboard under pressure — it depends on one clear instruction, fast.  
