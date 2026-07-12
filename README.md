@@ -95,6 +95,8 @@ DeviceJobWhy it can't be dropped📱 Snapdragon Phone (Vision Node)Camera, HRPos
 
 Data flow: Phone → pose metadata (WebSocket) → Fusion Engine. Arduino → sensor data (Serial/WebSocket) → Fusion Engine. Fusion Engine → emergency command → Arduino. Arduino/Fusion Engine → incident data → Qualcomm AI Cloud.
 
+![image alt](https://github.com/Dharaneesh170688/River-guardian/blob/4bfe762ac7c9129bfa50d18d521e2fbf2659046c/WhatsApp%20Image%202026-07-12%20at%201.19.18%20PM.jpeg)
+
 See. Predict. Verify. Protect.
 ## Project Structure 📂
 
