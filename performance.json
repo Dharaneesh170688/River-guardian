@@ -1,0 +1,352 @@
+[
+  {
+    "timestamp": "2026-07-12T12:08:04.092488",
+    "latency_ms": 2.0573000074364245,
+    "cpu_percent": 12.5,
+    "ram_percent": 45.0,
+    "fps": 1.0
+  },
+  {
+    "timestamp": "2026-07-12T12:08:07.106203",
+    "latency_ms": 2.78690000413917,
+    "cpu_percent": 12.5,
+    "ram_percent": 45.0,
+    "fps": 1.0
+  },
+  {
+    "timestamp": "2026-07-12T12:08:10.117954",
+    "latency_ms": 5.608399995253421,
+    "cpu_percent": 12.5,
+    "ram_percent": 45.0,
+    "fps": 1.0
+  },
+  {
+    "timestamp": "2026-07-12T12:08:13.123976",
+    "latency_ms": 2.162100005079992,
+    "cpu_percent": 12.5,
+    "ram_percent": 45.0,
+    "fps": 1.0
+  },
+  {
+    "timestamp": "2026-07-12T12:08:16.128655",
+    "latency_ms": 2.4974999978439882,
+    "cpu_percent": 12.5,
+    "ram_percent": 45.0,
+    "fps": 1.0
+  },
+  {
+    "timestamp": "2026-07-12T12:08:19.171740",
+    "latency_ms": 38.42620000068564,
+    "cpu_percent": 12.5,
+    "ram_percent": 45.0,
+    "fps": 1.0
+  },
+  {
+    "timestamp": "2026-07-12T12:08:22.150982",
+    "latency_ms": 2.275599996210076,
+    "cpu_percent": 12.5,
+    "ram_percent": 45.0,
+    "fps": 1.0
+  },
+  {
+    "timestamp": "2026-07-12T12:08:25.168341",
+    "latency_ms": 2.3495000059483573,
+    "cpu_percent": 12.5,
+    "ram_percent": 45.0,
+    "fps": 1.0
+  },
+  {
+    "timestamp": "2026-07-12T12:08:35.206119",
+    "latency_ms": 2.0656999986385927,
+    "cpu_percent": 12.5,
+    "ram_percent": 45.0,
+    "fps": 1.0
+  },
+  {
+    "timestamp": "2026-07-12T12:08:38.210226",
+    "latency_ms": 2.3566000018035993,
+    "cpu_percent": 12.5,
+    "ram_percent": 45.0,
+    "fps": 1.0
+  },
+  {
+    "timestamp": "2026-07-12T12:08:41.210427",
+    "latency_ms": 2.2693999926559627,
+    "cpu_percent": 12.5,
+    "ram_percent": 45.0,
+    "fps": 1.0
+  },
+  {
+    "timestamp": "2026-07-12T12:08:44.212036",
+    "latency_ms": 2.1908000053372234,
+    "cpu_percent": 12.5,
+    "ram_percent": 45.0,
+    "fps": 1.0
+  },
+  {
+    "timestamp": "2026-07-12T12:08:47.208528",
+    "latency_ms": 2.3461999953724444,
+    "cpu_percent": 12.5,
+    "ram_percent": 45.0,
+    "fps": 1.0
+  },
+  {
+    "timestamp": "2026-07-12T12:08:50.219116",
+    "latency_ms": 2.219000001787208,
+    "cpu_percent": 12.5,
+    "ram_percent": 45.0,
+    "fps": 1.0
+  },
+  {
+    "timestamp": "2026-07-12T12:08:53.368194",
+    "latency_ms": 132.85119998909067,
+    "cpu_percent": 12.5,
+    "ram_percent": 45.0,
+    "fps": 1.0
+  },
+  {
+    "timestamp": "2026-07-12T12:08:56.243178",
+    "latency_ms": 2.14459998824168,
+    "cpu_percent": 12.5,
+    "ram_percent": 45.0,
+    "fps": 1.0
+  },
+  {
+    "timestamp": "2026-07-12T12:08:59.366827",
+    "latency_ms": 135.11260000814218,
+    "cpu_percent": 12.5,
+    "ram_percent": 45.0,
+    "fps": 1.0
+  },
+  {
+    "timestamp": "2026-07-12T12:09:02.234847",
+    "latency_ms": 2.404599988949485,
+    "cpu_percent": 12.5,
+    "ram_percent": 45.0,
+    "fps": 1.0
+  },
+  {
+    "timestamp": "2026-07-12T12:09:05.236824",
+    "latency_ms": 2.3969000030774623,
+    "cpu_percent": 12.5,
+    "ram_percent": 45.0,
+    "fps": 1.0
+  },
+  {
+    "timestamp": "2026-07-12T12:09:08.250808",
+    "latency_ms": 2.378900011535734,
+    "cpu_percent": 12.5,
+    "ram_percent": 45.0,
+    "fps": 1.0
+  },
+  {
+    "timestamp": "2026-07-12T12:09:11.260637",
+    "latency_ms": 2.1625000081257895,
+    "cpu_percent": 12.5,
+    "ram_percent": 45.0,
+    "fps": 1.0
+  },
+  {
+    "timestamp": "2026-07-12T12:09:14.255018",
+    "latency_ms": 2.3024000111036003,
+    "cpu_percent": 12.5,
+    "ram_percent": 45.0,
+    "fps": 1.0
+  },
+  {
+    "timestamp": "2026-07-12T12:09:17.302948",
+    "latency_ms": 41.38809999858495,
+    "cpu_percent": 12.5,
+    "ram_percent": 45.0,
+    "fps": 1.0
+  },
+  {
+    "timestamp": "2026-07-12T12:09:20.267459",
+    "latency_ms": 2.250000005005859,
+    "cpu_percent": 12.5,
+    "ram_percent": 45.0,
+    "fps": 1.0
+  },
+  {
+    "timestamp": "2026-07-12T12:09:23.278754",
+    "latency_ms": 2.377500000875443,
+    "cpu_percent": 12.5,
+    "ram_percent": 45.0,
+    "fps": 1.0
+  },
+  {
+    "timestamp": "2026-07-12T12:09:33.336748",
+    "latency_ms": 2.5274999934481457,
+    "cpu_percent": 12.5,
+    "ram_percent": 45.0,
+    "fps": 1.0
+  },
+  {
+    "timestamp": "2026-07-12T12:09:36.327220",
+    "latency_ms": 2.7209000108996406,
+    "cpu_percent": 12.5,
+    "ram_percent": 45.0,
+    "fps": 1.0
+  },
+  {
+    "timestamp": "2026-07-12T12:09:39.333788",
+    "latency_ms": 2.474699998856522,
+    "cpu_percent": 12.5,
+    "ram_percent": 45.0,
+    "fps": 1.0
+  },
+  {
+    "timestamp": "2026-07-12T12:09:42.347843",
+    "latency_ms": 2.4846999876899645,
+    "cpu_percent": 12.5,
+    "ram_percent": 45.0,
+    "fps": 1.0
+  },
+  {
+    "timestamp": "2026-07-12T12:09:45.366844",
+    "latency_ms": 2.099899997119792,
+    "cpu_percent": 12.5,
+    "ram_percent": 45.0,
+    "fps": 1.0
+  },
+  {
+    "timestamp": "2026-07-12T12:09:48.360790",
+    "latency_ms": 2.5695000076666474,
+    "cpu_percent": 12.5,
+    "ram_percent": 45.0,
+    "fps": 1.0
+  },
+  {
+    "timestamp": "2026-07-12T12:09:51.490429",
+    "latency_ms": 124.348999990616,
+    "cpu_percent": 12.5,
+    "ram_percent": 45.0,
+    "fps": 1.0
+  },
+  {
+    "timestamp": "2026-07-12T12:09:54.377801",
+    "latency_ms": 2.2478000028058887,
+    "cpu_percent": 12.5,
+    "ram_percent": 45.0,
+    "fps": 1.0
+  },
+  {
+    "timestamp": "2026-07-12T12:09:57.526674",
+    "latency_ms": 136.0561999899801,
+    "cpu_percent": 12.5,
+    "ram_percent": 45.0,
+    "fps": 1.0
+  },
+  {
+    "timestamp": "2026-07-12T12:10:00.391715",
+    "latency_ms": 2.2698999964632094,
+    "cpu_percent": 12.5,
+    "ram_percent": 45.0,
+    "fps": 1.0
+  },
+  {
+    "timestamp": "2026-07-12T12:10:03.408624",
+    "latency_ms": 2.4956999986898154,
+    "cpu_percent": 12.5,
+    "ram_percent": 45.0,
+    "fps": 1.0
+  },
+  {
+    "timestamp": "2026-07-12T12:10:06.427400",
+    "latency_ms": 2.145799997379072,
+    "cpu_percent": 12.5,
+    "ram_percent": 45.0,
+    "fps": 1.0
+  },
+  {
+    "timestamp": "2026-07-12T12:10:09.443705",
+    "latency_ms": 2.1795000066049397,
+    "cpu_percent": 12.5,
+    "ram_percent": 45.0,
+    "fps": 1.0
+  },
+  {
+    "timestamp": "2026-07-12T12:10:12.438900",
+    "latency_ms": 3.5158999962732196,
+    "cpu_percent": 12.5,
+    "ram_percent": 45.0,
+    "fps": 1.0
+  },
+  {
+    "timestamp": "2026-07-12T12:10:15.485688",
+    "latency_ms": 38.15339998982381,
+    "cpu_percent": 12.5,
+    "ram_percent": 45.0,
+    "fps": 1.0
+  },
+  {
+    "timestamp": "2026-07-12T12:10:18.460908",
+    "latency_ms": 2.347800007555634,
+    "cpu_percent": 12.5,
+    "ram_percent": 45.0,
+    "fps": 1.0
+  },
+  {
+    "timestamp": "2026-07-12T12:10:21.464005",
+    "latency_ms": 2.850300006684847,
+    "cpu_percent": 12.5,
+    "ram_percent": 45.0,
+    "fps": 1.0
+  },
+  {
+    "timestamp": "2026-07-12T12:10:31.502741",
+    "latency_ms": 2.426600010949187,
+    "cpu_percent": 12.5,
+    "ram_percent": 45.0,
+    "fps": 1.0
+  },
+  {
+    "timestamp": "2026-07-12T12:10:34.520306",
+    "latency_ms": 2.13350000558421,
+    "cpu_percent": 12.5,
+    "ram_percent": 45.0,
+    "fps": 1.0
+  },
+  {
+    "timestamp": "2026-07-12T12:10:37.533651",
+    "latency_ms": 2.4403999996138737,
+    "cpu_percent": 12.5,
+    "ram_percent": 45.0,
+    "fps": 1.0
+  },
+  {
+    "timestamp": "2026-07-12T12:10:40.549060",
+    "latency_ms": 4.814299987629056,
+    "cpu_percent": 12.5,
+    "ram_percent": 45.0,
+    "fps": 1.0
+  },
+  {
+    "timestamp": "2026-07-12T12:10:43.546962",
+    "latency_ms": 2.168899998650886,
+    "cpu_percent": 12.5,
+    "ram_percent": 45.0,
+    "fps": 1.0
+  },
+  {
+    "timestamp": "2026-07-12T12:10:46.570298",
+    "latency_ms": 2.127399988239631,
+    "cpu_percent": 12.5,
+    "ram_percent": 45.0,
+    "fps": 1.0
+  },
+  {
+    "timestamp": "2026-07-12T12:10:49.715564",
+    "latency_ms": 142.73569999204483,
+    "cpu_percent": 12.5,
+    "ram_percent": 45.0,
+    "fps": 1.0
+  },
+  {
+    "timestamp": "2026-07-12T12:10:52.585432",
+    "latency_ms": 6.391199989593588,
+    "cpu_percent": 12.5,
+    "ram_percent": 45.0,
+    "fps": 1.0
+  }
+]

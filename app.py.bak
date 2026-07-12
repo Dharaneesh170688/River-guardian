@@ -1,0 +1,853 @@
+import streamlit as st
+import requests
+import time
+import pandas as pd
+import random
+import datetime
+import os
+import json
+import streamlit.components.v1 as components
+
+# Use wide layout for a command-center feel
+st.set_page_config(layout="wide", page_title="RiverGuardian AI")
+
+# Premium global CSS and fonts
+PREMIUM_CSS = """
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --bg-1: #07131F;
+        --bg-2: #0A1420;
+        --card-bg: #0F172A;
+        --card-strong: #111827;
+        --card-border: rgba(255,255,255,0.08);
+        --accent: #48CAE4;
+        --accent-2: #22D3EE;
+        --success: #34D399;
+        --warning: #FBBF24;
+        --danger: #F87171;
+        --blue: #3B82F6;
+        --card-radius: 20px;
+    }
+    html, body, .reportview-container, .main {
+        background: radial-gradient(circle at top, rgba(72,202,228,0.08), transparent 35%), linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 100%) !important;
+        color: #E6EEF6;
+        font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+    .css-18e3th9 { padding-top: 6px; }
+    .stApp, .main { overflow-x: hidden; }
+    .top-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        padding: 24px 28px;
+        margin-bottom: 16px;
+        background: rgba(8, 15, 28, 0.96);
+        border: 1px solid rgba(72,202,228,0.18);
+        border-radius: 22px;
+        box-shadow: 0 28px 80px rgba(0,0,0,0.35);
+        backdrop-filter: blur(18px);
+    }
+    .brand { display: flex; align-items: center; gap: 18px; }
+    .logo-badge {
+        width: 62px;
+        height: 62px;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #22D3EE, #3B82F6);
+        color: white;
+        font-weight: 900;
+        font-size: 1.2rem;
+        letter-spacing: -0.06em;
+        box-shadow: 0 20px 50px rgba(34, 211, 238, 0.24);
+    }
+    .brand-content { display: flex; flex-direction: column; gap: 4px; }
+    .brand-title { margin: 0; font-size: 2.4rem; font-weight: 900; letter-spacing: -0.05em; color: #F8FAFC; }
+    .brand-subtitle { margin: 0; font-size: 1rem; color: #94A3B8; }
+    .brand-tagline { margin: 0; font-size: 0.85rem; color: #94A3B8; }
+    .header-divider { height: 1px; margin: 0 28px 18px; background: linear-gradient(90deg, transparent, rgba(72,202,228,0.24), transparent); }
+    .top-meta { display: grid; grid-template-columns: repeat(6, minmax(100px, 1fr)); gap: 10px; align-items: center; }
+    .meta-chip {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 68px;
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 18px;
+        padding: 12px 14px;
+        font-size: 0.8rem;
+        color: #CBD5E1;
+        text-align: center;
+        transition: transform 0.18s ease, border-color 0.18s ease;
+    }
+    .meta-chip:hover { transform: translateY(-2px); border-color: rgba(72,202,228,0.3); }
+    .meta-chip strong { color: #F8FAFC; font-weight: 700; }
+    .meta-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
+        margin-bottom: 6px;
+        border-radius: 10px;
+        background: rgba(72,202,228,0.12);
+        color: #A5F3FC;
+    }
+    .hero-wrap { position: relative; margin: 0 28px 24px; }
+    .hero-card {
+        background: linear-gradient(180deg, rgba(8, 15, 28, 0.96), rgba(12, 24, 45, 0.92));
+        border: 1px solid rgba(72,202,228,0.16);
+        border-radius: 20px;
+        padding: 28px;
+        box-shadow: 0 30px 90px rgba(0,0,0,0.35);
+        min-height: 120px;
+        color: #E6EEF6;
+    }
+    .hero-card strong { color: #F8FAFC; }
+    .hero-tag { display: inline-flex; align-items: center; gap: 8px; background: rgba(72,202,228,0.14); color: #A5F3FC; border-radius: 999px; padding: 8px 14px; font-size: 0.78rem; letter-spacing: 0.02em; text-transform: uppercase; }
+    .hero-title { font-size: 2.6rem; line-height: 1.04; margin: 16px 0 0; letter-spacing: -0.05em; }
+    .hero-subtitle { font-size: 1rem; color: #94A3B8; margin-top: 14px; max-width: 680px; }
+    .hero-widgets { margin-top: 28px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+    .hero-widget { border-radius: 18px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); padding: 18px; }
+    .hero-widget .label { display: block; color: #94A3B8; font-size: 0.78rem; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.08em; }
+    .hero-widget .value { font-size: 1.35rem; font-weight: 800; color: #F8FAFC; }
+    .hero-widget .sub { margin-top: 6px; color: #8CA3AF; font-size: 0.78rem; }
+    .main-grid { display: grid; grid-template-columns: minmax(0, 1.8fr) minmax(0, 1fr); gap: 24px; margin: 0 28px; }
+    .card-panel { background: rgba(8, 15, 28, 0.94); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; padding: 24px; box-shadow: 0 24px 60px rgba(0,0,0,0.28); color: #E6EEF6; }
+    .card-panel h2 { margin: 0 0 16px; font-size: 1.45rem; font-weight: 900; }
+    .card-panel p { color: #94A3B8; line-height: 1.7; }
+    .panel-title { margin: 0 0 18px; font-size: 1.15rem; font-weight: 800; color: #F8FAFC; }
+    .panel-subtitle { font-size: 0.88rem; color: #98AFC4; line-height: 1.7; }
+    .panel-pill { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 999px; background: rgba(72,202,228,0.14); border: 1px solid rgba(72,202,228,0.2); color: #A5F3FC; font-size: 0.78rem; }
+    .panel-pill.danger { background: rgba(248,113,113,0.14); border-color: rgba(248,113,113,0.2); color: #FED7D7; }
+    .panel-pill.warning { background: rgba(249,115,22,0.14); border-color: rgba(249,115,22,0.2); color: #FCD34D; }
+    .glass-card { background: rgba(15,23,42,0.95); border: 1px solid rgba(255,255,255,0.08); border-radius: 24px; padding: 22px; box-shadow: 0 24px 70px rgba(0,0,0,0.30); backdrop-filter: blur(18px); color: #E6EEF6; margin-bottom: 18px; }
+    .glass-card:last-child { margin-bottom: 0; }
+    .glass-card h2, .glass-card h3, .glass-card h4 { color: #F8FAFC; }
+    .glass-card p, .glass-card span, .glass-card div { color: #cbd5e1; }
+    .banner-normal { background: linear-gradient(135deg, rgba(16,185,129,0.15), rgba(15,23,42,0.9)); border: 1px solid rgba(16,185,129,0.24); color: #A7F3D0; padding: 20px; border-radius: 20px; margin: 0 auto 18px; max-width: 820px; }
+    .banner-suspicious { background: linear-gradient(135deg, rgba(59,130,246,0.16), rgba(15,23,42,0.9)); border: 1px solid rgba(59,130,246,0.28); color: #A5B4FC; padding: 20px; border-radius: 20px; margin: 0 auto 18px; }
+    .banner-distress { background: linear-gradient(135deg, rgba(249,115,22,0.16), rgba(15,23,42,0.9)); border: 1px solid rgba(249,115,22,0.28); color: #FCD34D; padding: 20px; border-radius: 20px; margin: 0 auto 18px; }
+    .banner-emergency { background: linear-gradient(135deg, rgba(248,113,113,0.18), rgba(15,23,42,0.92)); border: 1px solid rgba(248,113,113,0.3); color: #FED7D7; padding: 20px; border-radius: 20px; margin: 0 auto 18px; }
+    .banner-observe { background: linear-gradient(135deg, rgba(59,130,246,0.12), rgba(15,23,42,0.9)); border: 1px solid rgba(59,130,246,0.22); color: #BFDBFE; padding: 20px; border-radius: 20px; margin: 0 auto 18px; }
+    .metric-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 18px; }
+    .metric-card { padding: 20px; border-radius: 18px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); }
+    .metric-card .meta-title { color: #94A3B8; font-size: 0.78rem; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.06em; }
+    .metric-card .meta-value { font-size: 1.55rem; font-weight: 900; color: #F8FAFC; }
+    .metric-card .meta-sub { margin-top: 6px; color: #8CA3AF; font-size: 0.77rem; }
+    .live-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-top: 18px; }
+    .live-item { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 18px; padding: 18px; color: #E6EEF6; }
+    .live-item span { display: block; font-size: 0.78rem; color: #94A3B8; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.08em; }
+    .live-item strong { font-size: 1.35rem; }
+    .footer-bar { margin: 22px 28px 32px; padding: 20px 26px; border-radius: 22px; background: rgba(8,15,28,0.96); border: 1px solid rgba(72,202,228,0.12); display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; color: #E6EEF6; }
+    .footer-item { display: flex; flex-direction: column; gap: 6px; border-radius: 18px; background: rgba(255,255,255,0.03); padding: 16px 18px; border: 1px solid rgba(255,255,255,0.06); }
+    .footer-item span { font-size: 0.8rem; color: #94A3B8; }
+    .footer-item strong { font-size: 1.15rem; }
+    .footer-item .status-ok { color: #34D399; }
+    .footer-item .status-warn { color: #FBBF24; }
+    .footer-item .status-alert { color: #EF4444; }
+    .panel-glow { position: relative; overflow: hidden; }
+    .panel-glow::before { content: ''; position: absolute; inset: -40%; background: radial-gradient(circle at top center, rgba(72,202,228,0.18), transparent 42%); opacity: 0.6; pointer-events: none; }
+    .lucide { width: 18px; height: 18px; stroke: #8CC6FF; }
+    @media (max-width: 1280px) {
+        .top-meta { grid-template-columns: repeat(3, minmax(100px, 1fr)); }
+        .hero-widgets { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .main-grid { grid-template-columns: 1fr; }
+        .left-nav { position: relative; left: 0; top: auto; width: 100%; flex-direction: row; justify-content: center; padding: 10px 0; }
+        .nav-btn { width: 48px; height: 48px; }
+        .footer-bar { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+</style>
+"""
+
+st.markdown(PREMIUM_CSS, unsafe_allow_html=True)
+
+# Top header
+TOPBAR_HTML = '''
+<div class="top-bar">
+    <div class="brand">
+        <div class="logo-badge">RG</div>
+        <div class="brand-content">
+            <div class="brand-title">RiverGuardian AI</div>
+            <div class="brand-subtitle">See • Verify • Protect</div>
+            <div class="brand-tagline">Enterprise AI Water Command Center</div>
+        </div>
+    </div>
+    <div class="top-meta">
+        <div class="meta-chip"><span class="meta-icon">⏱</span>Time<br><strong id="chip-time">--:--</strong></div>
+        <div class="meta-chip"><span class="meta-icon">☁️</span>Weather<br><strong>Clear</strong></div>
+        <div class="meta-chip"><span class="meta-icon">📍</span>GPS<br><strong>Online</strong></div>
+        <div class="meta-chip"><span class="meta-icon">🔋</span>Battery<br><strong>82%</strong></div>
+        <div class="meta-chip"><span class="meta-icon">🌐</span>Internet<br><strong>Connected</strong></div>
+        <div class="meta-chip"><span class="meta-icon">🤖</span>Edge AI<br><strong>Active</strong></div>
+    </div>
+</div>
+<div class="header-divider"></div>
+'''
+
+st.markdown(TOPBAR_HTML, unsafe_allow_html=True)
+
+
+# Floating small widget container for mission biometrics moved to bottom section
+FLOATING_WIDGETS = ''
+
+st.markdown(FLOATING_WIDGETS, unsafe_allow_html=True)
+# API / WebSocket endpoints (can be overridden via FUSION_API_URL env var)
+BASE_URL = os.environ.get("FUSION_API_URL", "http://localhost:8000")
+if BASE_URL.endswith('/'):
+    BASE_URL = BASE_URL[:-1]
+API_STATUS = f"{BASE_URL}/api/status"
+API_METRICS = f"{BASE_URL}/api/metrics"
+API_STATS = f"{BASE_URL}/api/stats"
+API_INCIDENTS = f"{BASE_URL}/api/incidents"
+API_SETTINGS = f"{BASE_URL}/api/settings"
+_scheme = 'wss' if BASE_URL.startswith('https') else 'ws'
+_host = BASE_URL.split('://', 1)[-1]
+WS_URL = f"{_scheme}://{_host}/ws"
+
+
+def make_svg_gauge(score: float) -> str:
+        """Return a small SVG gauge for a 0..1 trust score."""
+        try:
+                s = float(score)
+        except Exception:
+                s = 0.0
+        s = max(0.0, min(1.0, s))
+        pct = int(s * 100)
+        # needle angle from -90 (0%) to 90 (100%)
+        angle = -90 + (s * 180)
+        svg = f'''<div style="display:flex;align-items:center;justify-content:center;">
+        <svg width="160" height="90" viewBox="0 0 160 90" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <linearGradient id="g" x1="0" x2="1">
+                    <stop offset="0%" stop-color="#10b981" />
+                    <stop offset="50%" stop-color="#f59e0b" />
+                    <stop offset="100%" stop-color="#ef4444" />
+                </linearGradient>
+            </defs>
+            <path d="M10,80 A70,70 0 0,1 150,80" fill="none" stroke="url(#g)" stroke-width="12" stroke-linecap="round" opacity="0.9"/>
+            <g transform="translate(80,80)">
+                <line x1="0" y1="0" x2="0" y2="-56" stroke="#071423" stroke-width="6" transform="rotate({angle})" stroke-linecap="round" />
+                <circle cx="0" cy="0" r="6" fill="#071423" />
+            </g>
+            <text x="80" y="70" font-family="sans-serif" font-size="14" fill="#c9d1d9" text-anchor="middle">{pct}%</text>
+        </svg>
+    </div>'''
+        return svg
+
+
+def make_svg_sparkline(values) -> str:
+        """Render a compact SVG sparkline from a list of numeric values."""
+        vals = [float(v) if v is not None else 0.0 for v in values]
+        if not vals:
+                return '<div style="text-align:center;color:#9ca3af">—</div>'
+        w, h = 180, 36
+        mx, mn = max(vals), min(vals)
+        rng = mx - mn if mx != mn else 1.0
+        pts = []
+        for i, v in enumerate(vals):
+                x = (i / (len(vals) - 1)) * w if len(vals) > 1 else w / 2
+                y = h - ((v - mn) / rng) * h
+                pts.append(f"{x:.1f},{y:.1f}")
+        poly = ' '.join(pts)
+        svg = f'''<svg width="{w}" height="{h}" viewBox="0 0 {w} {h}" xmlns="http://www.w3.org/2000/svg">
+            <polyline fill="none" stroke="#10b981" stroke-width="2" points="{poly}" stroke-linejoin="round" stroke-linecap="round" />
+        </svg>'''
+        return f'<div style="padding:6px;background:transparent">{svg}</div>'
+
+# Define directories
+# Define the HTML template for Chart.js performance metrics
+CHARTS_HTML_TEMPLATE = f"""
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {{
+            margin: 0;
+            padding: 0;
+            background-color: #1f2937;
+            font-family: sans-serif;
+            color: #c9d1d9;
+            overflow: hidden;
+        }}
+        #chart-container {{
+            width: 100%;
+            height: 200px;
+            padding: 5px 0;
+        }}
+        .tabs {{
+            display: flex;
+            gap: 10px;
+            margin-bottom: 5px;
+        }}
+        .tab-btn {{
+            background-color: #374151;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #9ca3af;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: bold;
+            transition: all 0.2s ease;
+        }}
+        .tab-btn.active {{
+            background-color: #10b981;
+            color: #ffffff;
+            border-color: #10b981;
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+        }}
+        .tab-btn:hover:not(.active) {{
+            background-color: #4b5563;
+            color: #ffffff;
+        }}
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('latency')">FUSION LATENCY</button>
+        <button class="tab-btn" onclick="switchTab('resources')">CPU/RAM USAGE</button>
+        <button class="tab-btn" onclick="switchTab('fps')">FPS THROUGHPUT</button>
+    </div>
+    <div id="chart-container">
+        <canvas id="perfChart"></canvas>
+    </div>
+    <script>
+        var currentTab = 'latency';
+        var maxDataPoints = 30;
+        
+        // Data arrays
+        var labels = [];
+        var latencyData = [];
+        var cpuData = [];
+        var ramData = [];
+        var fpsData = [];
+
+        // Chart.js Configuration
+        var ctx = document.getElementById('perfChart').getContext('2d');
+        var chart = new Chart(ctx, {{
+            type: 'line',
+            data: {{
+                labels: labels,
+                datasets: []
+            }},
+            options: {{
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {{
+                    legend: {{
+                        display: true,
+                        labels: {{ color: '#c9d1d9', font: {{ size: 10 }} }}
+                    }}
+                }},
+                scales: {{
+                    x: {{
+                        grid: {{ color: 'rgba(255, 255, 255, 0.05)' }},
+                        ticks: {{ color: '#9ca3af', font: {{ size: 9 }} }}
+                    }},
+                    y: {{
+                        grid: {{ color: 'rgba(255, 255, 255, 0.05)' }},
+                        ticks: {{ color: '#9ca3af', font: {{ size: 9 }} }}
+                    }}
+                }},
+                animation: {{ duration: 0 }}
+            }}
+        }});
+
+        // Set datasets based on active tab
+        function updateChartDataset() {{
+            if (currentTab === 'latency') {{
+                chart.data.datasets = [{{
+                    label: 'Latency (ms)',
+                    data: latencyData,
+                    borderColor: '#10b981',
+                    backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.3,
+                    pointRadius: 1
+                }}];
+            }} else if (currentTab === 'resources') {{
+                chart.data.datasets = [
+                    {{
+                        label: 'CPU (%)',
+                        data: cpuData,
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.05)',
+                        borderWidth: 2,
+                        fill: false,
+                        tension: 0.3,
+                        pointRadius: 1
+                    }},
+                    {{
+                        label: 'RAM (%)',
+                        data: ramData,
+                        borderColor: '#eab308',
+                        backgroundColor: 'rgba(234, 179, 8, 0.05)',
+                        borderWidth: 2,
+                        fill: false,
+                        tension: 0.3,
+                        pointRadius: 1
+                    }}
+                ];
+            }} else if (currentTab === 'fps') {{
+                chart.data.datasets = [{{
+                    label: 'FPS Throughput',
+                    data: fpsData,
+                    borderColor: '#f43f5e',
+                    backgroundColor: 'rgba(244, 63, 94, 0.1)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.3,
+                    pointRadius: 1
+                }}];
+            }}
+            chart.update();
+        }}
+
+        // Switch tab handler
+        window.switchTab = function(tabName) {{
+            currentTab = tabName;
+            
+            // Update button styles
+            var buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(function(btn) {{
+                btn.classList.remove('active');
+            }});
+            event.currentTarget.classList.add('active');
+            
+            updateChartDataset();
+        }};
+
+        // Initialize datasets
+        updateChartDataset();
+
+        // WebSocket Connection
+        var wsUrl = "{WS_URL}";
+        var ws;
+        
+        function connect() {{
+            ws = new WebSocket(wsUrl);
+            ws.onmessage = function(event) {{
+                try {{
+                    var payload = JSON.parse(event.data);
+                    if (payload.type === 'state_update' && payload.metrics) {{
+                        var m = payload.metrics;
+                        var timeStr = new Date(m.timestamp).toLocaleTimeString([], {{hour: '2-digit', minute:'2-digit', second:'2-digit'}});
+                        
+                        labels.push(timeStr);
+                        latencyData.push(m.latency_ms);
+                        cpuData.push(m.cpu_percent);
+                        ramData.push(m.ram_percent);
+                        fpsData.push(m.fps);
+
+                        if (labels.length > maxDataPoints) {{
+                            labels.shift();
+                            latencyData.shift();
+                            cpuData.shift();
+                            ramData.shift();
+                            fpsData.shift();
+                        }}
+                        
+                        chart.update();
+                    }}
+                }} catch (e) {{
+                    console.error("Error parsing metrics: ", e);
+                }}
+            }};
+            
+            ws.onclose = function() {{
+                setTimeout(connect, 2000);
+            }};
+        }}
+        
+        connect();
+
+        // Fetch historical metrics on startup
+        fetch("{API_METRICS}")
+            .then(response => response.json())
+            .then(data => {{
+                if (data && data.length > 0) {{
+                    labels.length = 0;
+                    latencyData.length = 0;
+                    cpuData.length = 0;
+                    ramData.length = 0;
+                    fpsData.length = 0;
+                    
+                    data.forEach(m => {{
+                        var timeStr = new Date(m.timestamp).toLocaleTimeString([], {{hour: '2-digit', minute:'2-digit', second:'2-digit'}});
+                        labels.push(timeStr);
+                        latencyData.push(m.latency_ms);
+                        cpuData.push(m.cpu_percent);
+                        ramData.push(m.ram_percent);
+                        fpsData.push(m.fps);
+                    }});
+                    
+                    while (labels.length > maxDataPoints) {{
+                        labels.shift();
+                        latencyData.shift();
+                        cpuData.shift();
+                        ramData.shift();
+                        fpsData.shift();
+                    }}
+                    chart.update();
+                }}
+            }})
+            .catch(err => console.error("Error fetching metrics history: ", err));
+    </script>
+</body>
+</html>
+"""
+
+
+# Main content placeholders (kept for update loop to populate)
+center_placeholder = st.empty()
+right_placeholder = st.empty()
+bottom_placeholder = st.empty()
+
+# Full-width timeline & analytics strip beneath hero
+TIMELINE_HTML = '''
+<div style="width:100%; padding:18px 28px 2px; box-sizing:border-box;">
+    <div class="hero-card" style="padding:20px;">
+        <div style="display:flex; align-items:center; gap:14px;">
+            <div class="timeline-dot"></div>
+            <div class="timeline-line"></div>
+            <div class="timeline-dot"></div>
+            <div class="timeline-line"></div>
+            <div class="timeline-dot"></div>
+            <div class="timeline-line"></div>
+            <div class="timeline-dot"></div>
+            <div class="timeline-line"></div>
+            <div class="timeline-dot"></div>
+            <div class="timeline-line"></div>
+            <div class="timeline-dot"></div>
+        </div>
+        <div class="timeline-labels" style="margin-top:18px; grid-template-columns: repeat(6, minmax(0, 1fr)); gap:18px;">
+            <span>Person</span>
+            <span>Pose</span>
+            <span>Sensor</span>
+            <span>Fusion</span>
+            <span>AI</span>
+            <span>Alert</span>
+        </div>
+    </div>
+    <div style="margin-top:14px; color:#94A3B8; font-size:0.85rem;">Live • {}</div>
+</div>
+'''.format(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+
+# Streamlit fragment to run every second.
+# This updates metric values, charts, and incidents tables without page reloads or interrupting user inputs.
+@st.fragment(run_every=1)
+def update_dashboard_data():
+    try:
+        # Fetch status, metrics, stats
+        res_status = requests.get(API_STATUS, timeout=1.0)
+        res_metrics = requests.get(API_METRICS, timeout=1.0)
+        res_stats = requests.get(API_STATS, timeout=1.0)
+        
+        status_data = res_status.json() if res_status.status_code == 200 else {}
+        metrics_history_data = res_metrics.json() if res_metrics.status_code == 200 else []
+        stats_data = res_stats.json() if res_stats.status_code == 200 else {}
+    except Exception as e:
+        with center_placeholder.container():
+            st.error(f"Cannot connect to Fusion Engine at {API_STATUS}.")
+            st.warning("Please verify that the FastAPI backend server is running on port 8000.")
+            st.info("Start the FastAPI server: `uvicorn fusion.main:app --port 8000 --reload` in your terminal.")
+            st.info("Start the telemetry mock client: `python mock_client.py` in your terminal.")
+        return
+
+    # Extract Telemetry & Status
+    telemetry = status_data.get("telemetry", {})
+    mission_state = status_data.get("mission", "NORMAL")
+    trust_score = status_data.get("trust_score", 0.0)
+    explanation = status_data.get("explanation", "Waiting for telemetry update...")
+    last_timestamp = status_data.get("timestamp")
+    has_telemetry = bool(telemetry)
+
+    # Ensure risk_history is initialized before use
+    if "risk_history" not in st.session_state:
+        st.session_state.risk_history = [0.0] * 60
+    # Ensure selected language is initialized
+    if "selected_lang" not in st.session_state:
+        st.session_state.selected_lang = "English"
+
+    # Update risk history for sparkline
+    st.session_state.risk_history.append(trust_score)
+    if len(st.session_state.risk_history) > 60:
+        st.session_state.risk_history.pop(0)
+
+    # Use actual Arduino telemetry values instead of simulation
+    light_val = telemetry.get("light", 0.0)
+    water_val = telemetry.get("water", 0.0)
+    rain_val = telemetry.get("rain", False)
+    temp_val = telemetry.get("temp")
+    humidity_val = telemetry.get("humidity")
+    relay_val = telemetry.get("relay", "off")
+    led_val = telemetry.get("led_rgb", "unknown")
+    buzzer_val = telemetry.get("buzzer", "silent")
+    phone_val = telemetry.get("phone", 0.0)
+    movement_val = telemetry.get("movement", 0.0)
+
+    # Connection health and formatted telemetry values
+    telemetry_connection = "Disconnected"
+    last_updated_str = "--"
+    if last_timestamp:
+        try:
+            last_dt = datetime.datetime.fromisoformat(last_timestamp)
+            last_updated_str = last_dt.strftime('%H:%M:%S')
+            if (datetime.datetime.now() - last_dt).total_seconds() <= 5:
+                telemetry_connection = "Live"
+        except Exception:
+            last_updated_str = last_timestamp
+            telemetry_connection = "Disconnected"
+
+    def fmt_num(value, fmt):
+        return fmt.format(value) if isinstance(value, (int, float)) else "--"
+
+    water_text = fmt_num(water_val, "{:.2f} m")
+    flow_text = fmt_num(movement_val, "{:.2f} m/s")
+    temp_text = fmt_num(temp_val, "{:.1f}°C")
+    humidity_text = fmt_num(humidity_val, "{:.1f}%")
+    light_text = fmt_num(light_val, "{:.1f}")
+    rain_text = "--"
+    if rain_val is not None and rain_val != "":
+        rain_str = str(rain_val).strip().lower()
+        if rain_str in ("1", "true", "yes", "on"): rain_text = "Yes"
+        elif rain_str in ("0", "false", "no", "off"): rain_text = "No"
+        else: rain_text = str(rain_val)
+
+    gps_val = telemetry.get("gps")
+    if isinstance(gps_val, dict):
+        gps_text = f"{gps_val.get('lat', '--')}, {gps_val.get('lon', '--')}"
+    elif gps_val is None or gps_val == "":
+        gps_text = "--"
+    else:
+        gps_text = str(gps_val)
+
+    phone_text = "Disconnected"
+    if phone_val is not None and phone_val != "":
+        phone_str = str(phone_val).strip().lower()
+        if phone_str not in ("0", "false", "none", "off", ""):
+            phone_text = "Connected"
+
+    sensor_text = telemetry.get("health", "--")
+    sensor_text = sensor_text.capitalize() if isinstance(sensor_text, str) else str(sensor_text)
+
+    # 1. Update Center Column
+    with center_placeholder.container():
+        st.markdown('<div class="glass-card" style="text-align:center;">', unsafe_allow_html=True)
+        st.subheader("Mission State Status")
+        
+        # Render Glowing State Banner
+        if mission_state == "EMERGENCY":
+            banner_cls = "banner-emergency"
+            badge_lbl = "🚨 EMERGENCY ACTIVE"
+        elif mission_state == "DISTRESS":
+            banner_cls = "banner-distress"
+            badge_lbl = "⚠️ DISTRESS ENFORCED"
+        elif mission_state == "SUSPICIOUS":
+            banner_cls = "banner-suspicious"
+            badge_lbl = "🔍 SUSPICIOUS STATE"
+        elif mission_state == "OBSERVE":
+            banner_cls = "banner-observe"
+            badge_lbl = "👁️ OBSERVATION STATE"
+        else:
+            banner_cls = "banner-normal"
+            badge_lbl = "✅ STATE: NORMAL"
+
+        if not has_telemetry:
+            badge_lbl = "⏳ WAITING FOR COM3 TELEMETRY"
+            banner_cls = "banner-observe"
+            
+        st.markdown(f"""
+        <div class="{banner_cls}">
+            <h2 style="margin:0; font-size: 1.8rem; font-weight: 800; font-family: sans-serif;">{badge_lbl}</h2>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        # Risk gauge dial
+        col_g1, col_g2, col_g3 = st.columns([1, 2, 1])
+        with col_g2:
+            st.markdown(make_svg_gauge(trust_score), unsafe_allow_html=True)
+            
+        # GenieX Explanation Card
+        st.markdown("""
+        <div style="background: rgba(31, 41, 55, 0.6); padding: 1rem; border-radius: 8px; border: 1px dashed rgba(255,255,255,0.15); margin-top: 1rem;">
+            <span style="color: #10b981; font-weight: bold; font-size: 0.85rem; letter-spacing: 0.05em;">GENIEX EXPLAINABILITY</span>
+        """, unsafe_allow_html=True)
+        st.write(explanation)
+        st.markdown("</div>", unsafe_allow_html=True)
+        st.markdown('</div>', unsafe_allow_html=True)
+
+        # 2. Update Right Column — premium stacked glass cards
+        with right_placeholder.container():
+                # Live Camera Card
+                cam_fps = stats_data.get('camera_fps', '—') if isinstance(stats_data, dict) else '—'
+                cam_latency = stats_data.get('camera_latency_ms', '—') if isinstance(stats_data, dict) else '—'
+                st.markdown(f"""
+                <div class="glass-card" style="margin-bottom:10px;">
+                    <div style="display:flex; gap:12px; align-items:center;">
+                        <div style="flex:1;">
+                            <div style="font-weight:700; color:#e6f7ff;">Live Camera Feed</div>
+                            <div style="margin-top:8px; border-radius:12px; overflow:hidden; background:#081723; height:120px; display:flex; align-items:center; justify-content:center;">
+                                <div style="color:#9ca3af">Camera Preview</div>
+                            </div>
+                        </div>
+                        <div style="width:120px; display:flex; flex-direction:column; gap:8px;">
+                            <div style="background:rgba(255,255,255,0.02); padding:8px; border-radius:10px; text-align:center;">FPS<br><strong style="color:#e6f7ff">{cam_fps}</strong></div>
+                            <div style="background:rgba(255,255,255,0.02); padding:8px; border-radius:10px; text-align:center;">Latency<br><strong style="color:#9fbfcf">{cam_latency} ms</strong></div>
+                            <div style="background:linear-gradient(90deg,#023E8A,#48CAE4); padding:6px; border-radius:8px; text-align:center; color:#fff; font-weight:700;">AI: Online</div>
+                        </div>
+                    </div>
+                </div>
+                """, unsafe_allow_html=True)
+
+                # Fusion Engine Card
+                fusion_conf = status_data.get('fusion_confidence', None)
+                sensor_health = telemetry.get('health', 'healthy')
+                cpu_pct = stats_data.get('cpu_percent', '—') if isinstance(stats_data, dict) else '—'
+                ram_pct = stats_data.get('ram_percent', '—') if isinstance(stats_data, dict) else '—'
+                st.markdown(f"""
+                <div class="glass-card" style="margin-bottom:10px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <div>
+                            <div style="font-weight:700; color:#e6f7ff;">Fusion Engine</div>
+                            <div style="color:#9ca3af; font-size:13px;">Trust Score: <strong style='color:#e6f7ff'>{int(trust_score*100)}%</strong></div>
+                        </div>
+                        <div style="display:flex; gap:8px;">
+                            <div style="text-align:center; padding:8px; border-radius:8px; background:rgba(255,255,255,0.02)">CPU<br><strong>{cpu_pct}%</strong></div>
+                            <div style="text-align:center; padding:8px; border-radius:8px; background:rgba(255,255,255,0.02)">RAM<br><strong>{ram_pct}%</strong></div>
+                        </div>
+                    </div>
+                    <div style="margin-top:10px; display:flex; gap:10px; align-items:center;">
+                        <div style="flex:1">{make_svg_gauge(trust_score)}</div>
+                        <div style="width:120px; text-align:center;">Sensor Health<br><strong style="color:#e6f7ff">{sensor_health.upper()}</strong></div>
+                    </div>
+                </div>
+                """, unsafe_allow_html=True)
+
+                # GenieX Explainability Card
+                st.markdown("""
+                <div class="glass-card" style="margin-bottom:10px;">
+                    <div style="font-weight:700; color:#e6f7ff;">GenieX Explainability</div>
+                    <div style="margin-top:8px; color:#9ca3af; font-size:13px;">Decision Summary</div>
+                """, unsafe_allow_html=True)
+                st.write(explanation)
+                st.markdown("""
+                    <div style="margin-top:8px; display:flex; gap:8px;">
+                        <div style="flex:1; background:rgba(255,255,255,0.02); padding:8px; border-radius:8px;">Trust: <strong>{:.0%}</strong></div>
+                    </div>
+                </div>
+                """ .format(trust_score), unsafe_allow_html=True)
+
+                # Arduino Telemetry Card
+                st.markdown(f"""
+                <div class="glass-card" style="margin-bottom:10px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                        <div style="font-weight:700; color:#e6f7ff;">Arduino Telemetry</div>
+                        <div style="font-size:0.85rem; color:{'#34D399' if telemetry_connection == 'Live' else '#FBBF24'}; font-weight:700;">{telemetry_connection}</div>
+                    </div>
+                    <div style="display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:10px;">
+                        <div style="padding:12px; background:rgba(255,255,255,0.03); border-radius:12px;"><div style="font-size:0.75rem; color:#94A3B8;">Water Level</div><div style="font-size:1.2rem; font-weight:700; color:#e6f7ff;">{water_text}</div></div>
+                        <div style="padding:12px; background:rgba(255,255,255,0.03); border-radius:12px;"><div style="font-size:0.75rem; color:#94A3B8;">Flow Speed</div><div style="font-size:1.2rem; font-weight:700; color:#e6f7ff;">{flow_text}</div></div>
+                        <div style="padding:12px; background:rgba(255,255,255,0.03); border-radius:12px;"><div style="font-size:0.75rem; color:#94A3B8;">Temperature</div><div style="font-size:1.2rem; font-weight:700; color:#e6f7ff;">{temp_text}</div></div>
+                        <div style="padding:12px; background:rgba(255,255,255,0.03); border-radius:12px;"><div style="font-size:0.75rem; color:#94A3B8;">Humidity</div><div style="font-size:1.2rem; font-weight:700; color:#e6f7ff;">{humidity_text}</div></div>
+                        <div style="padding:12px; background:rgba(255,255,255,0.03); border-radius:12px;"><div style="font-size:0.75rem; color:#94A3B8;">Rain Sensor</div><div style="font-size:1.2rem; font-weight:700; color:#e6f7ff;">{rain_text}</div></div>
+                        <div style="padding:12px; background:rgba(255,255,255,0.03); border-radius:12px;"><div style="font-size:0.75rem; color:#94A3B8;">Light Sensor</div><div style="font-size:1.2rem; font-weight:700; color:#e6f7ff;">{light_text}</div></div>
+                        <div style="padding:12px; background:rgba(255,255,255,0.03); border-radius:12px;"><div style="font-size:0.75rem; color:#94A3B8;">GPS</div><div style="font-size:1rem; font-weight:700; color:#e6f7ff;">{gps_text}</div></div>
+                        <div style="padding:12px; background:rgba(255,255,255,0.03); border-radius:12px;"><div style="font-size:0.75rem; color:#94A3B8;">Phone</div><div style="font-size:1rem; font-weight:700; color:#e6f7ff;">{phone_text}</div></div>
+                        <div style="padding:12px; background:rgba(255,255,255,0.03); border-radius:12px;"><div style="font-size:0.75rem; color:#94A3B8;">Sensor Status</div><div style="font-size:1rem; font-weight:700; color:#e6f7ff;">{sensor_text}</div></div>
+                        <div style="grid-column: span 2; padding:12px; background:rgba(255,255,255,0.03); border-radius:12px;"><div style="font-size:0.75rem; color:#94A3B8;">Last Updated</div><div style="font-size:1rem; font-weight:700; color:#e6f7ff;">{last_updated_str}</div></div>
+                    </div>
+                </div>
+                """, unsafe_allow_html=True)
+
+                # Sarvam Alerts Card
+                st.markdown(f"""
+                <div class="glass-card" style="margin-bottom:10px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <div style="font-weight:700; color:#e6f7ff;">Sarvam Alerts</div>
+                        <div style="color:#9ca3af;">Language: <strong>{st.session_state.selected_lang}</strong></div>
+                    </div>
+                    <div style="margin-top:8px; display:flex; gap:8px;">
+                        <div style="flex:1; padding:8px; background:rgba(255,255,255,0.02); border-radius:8px;">Voice Alert: <strong>Enabled</strong></div>
+                        <div style="flex:1; padding:8px; background:rgba(255,255,255,0.02); border-radius:8px;">SMS: <strong>Ready</strong></div>
+                    </div>
+                </div>
+                """, unsafe_allow_html=True)
+
+                # Cloud Escalation Card
+                total_inc = stats_data.get('total_incidents', 0) if isinstance(stats_data, dict) else 0
+                cloud_sync = stats_data.get('cloud_synced', False) if isinstance(stats_data, dict) else False
+                st.markdown(f"""
+                <div class="glass-card">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <div style="font-weight:700; color:#e6f7ff;">Cloud Escalation</div>
+                        <div style="color:#9ca3af;">Incidents: <strong>{total_inc}</strong></div>
+                    </div>
+                    <div style="margin-top:10px;">Cloud Sync: <strong style='color:{'#00E676' if cloud_sync else '#9ca3af'}'>{'Yes' if cloud_sync else 'No'}</strong></div>
+                </div>
+                """, unsafe_allow_html=True)
+
+    # 3. Update Bottom Section (Charts & Incident Logs)
+    with bottom_placeholder.container():
+        col_b1, col_b2 = st.columns([5, 5])
+        
+        # Left: Performance charts
+        with col_b1:
+            st.markdown('<div class="glass-card">', unsafe_allow_html=True)
+            st.subheader("Performance Logs (Latency, CPU, RAM)")
+            # Load dynamic Chart.js panel that connects directly to WebSocket (no pyarrow dependencies!)
+            components.html(CHARTS_HTML_TEMPLATE, height=360)
+            st.markdown('</div>', unsafe_allow_html=True)
+            
+        # Right: Incidents Table & Heatmap
+        with col_b2:
+            st.markdown('<div class="glass-card">', unsafe_allow_html=True)
+            st.subheader("Cloud Escalation & Incident Heatmap")
+            
+            if stats_data and stats_data.get("total_incidents", 0) > 0:
+                st.write(f"Total Incidents Logged: **{stats_data.get('total_incidents')}** | Cloud Escalated: **{stats_data.get('cloud_escalated_count')}**")
+                
+                dist = stats_data.get("state_distribution", {})
+                col_st1, col_st2, col_st3, col_st4 = st.columns(4)
+                col_st1.metric("Observe", dist.get("OBSERVE", 0))
+                col_st2.metric("Suspicious", dist.get("SUSPICIOUS", 0))
+                col_st3.metric("Distress", dist.get("DISTRESS", 0))
+                col_st4.metric("Emergency", dist.get("EMERGENCY", 0))
+                
+                # Fetch recent incidents list from endpoint
+                try:
+                    res_inc = requests.get(API_INCIDENTS, timeout=1.0)
+                    if res_inc.status_code == 200:
+                        inc_list = res_inc.json()
+                        if inc_list:
+                            st.write("**Recent Logs:**")
+                            log_df = pd.DataFrame(inc_list[-5:])
+                            log_df['time'] = log_df['timestamp'].apply(lambda x: pd.to_datetime(x).strftime('%m-%d %H:%M:%S') if pd.notnull(x) else '')
+                            st.dataframe(log_df[['time', 'state', 'trust_score', 'cloud_escalated', 'second_opinion_verdict']], use_container_width=True)
+                except Exception as e:
+                    print(f"Could not load recent incidents: {e}")
+            else:
+                st.info("No logs recorded yet. Escalate state to SUSPICIOUS, DISTRESS, or EMERGENCY to view entries.")
+            st.markdown('</div>', unsafe_allow_html=True)
+
+    # Add mission biometrics at the bottom of the dashboard
+    st.markdown('<div class="glass-card" style="margin: 14px 28px 28px; padding: 20px;">', unsafe_allow_html=True)
+    st.subheader("Mission Biometrics")
+    col_m1, col_m2, col_m3, col_m4 = st.columns(4)
+    col_m1.metric("Risk", "7%")
+    col_m2.metric("Trust", "97%")
+    col_m3.metric("FPS", "29")
+    col_m4.metric("Latency", "23ms")
+    st.markdown('</div>', unsafe_allow_html=True)
+
+# Run the update dashboard loop
+update_dashboard_data()
+
