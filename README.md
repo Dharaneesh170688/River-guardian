@@ -19,6 +19,9 @@ EffectiveRisk = (0.50·PoseRisk + 0.20·WaterLevelRisk + 0.15·MovementRisk
 
 ![image alt](https://github.com/Dharaneesh170688/River-guardian/blob/e7f965475237bc065d08b9222ec0066684cad171/Screenshot_2026-07-12-12-48-56-95_0cf50405bf4e606ac561eec43039b08f.jpg)
 
+
+![image alt](https://github.com/Dharaneesh170688/River-guardian/blob/e874641f26746d2fde1ac7cfb53e83b8fb244ce5/Screenshot_2026-07-12-12-49-06-41_0cf50405bf4e606ac561eec43039b08f.jpg)
+
 Nothing here is a black box. Every emergency decision comes with a human-readable justification, generated live by GenieX:
 
 textDecision: EMERGENCY
