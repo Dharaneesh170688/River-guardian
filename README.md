@@ -4,6 +4,81 @@
 Drowning is silent and fast. Most existing camera-based monitoring systems ask only one question: "Did the AI detect a drowning event?" They have no way to know if their own prediction can be trusted — rain, darkness, rising water, and device strain can all silently degrade a camera's confidence, leading to missed emergencies or false alarms. Wrong triggers waste rescue response; missed ones cost lives.
 
 
+Traditional systems trust a single confidence number. RiverGuardian cross-checks independent signals and explicitly discounts any of them if compromised:
+
+
+Vision and environment agree on risk → fast, confident escalation
+Only one signal flags risk → holds, waits for corroboration
+A node reports degraded health (low light, rain, low battery, dropped connection) → the dashboard says so, out loud, and reweights the decision accordingly
+Risk is trending up → the dashboard projects roughly how long until the next state, not just where things stand right now
+
+
+EffectiveRisk = (0.50·PoseRisk + 0.20·WaterLevelRisk + 0.15·MovementRisk
+                + 0.10·RainRisk + 0.05·LightRisk) × HealthFactor
+
+Nothing here is a black box. Every emergency decision comes with a human-readable justification, generated live by GenieX:
+
+textDecision: EMERGENCY
+Trust Score: 100%
+
+Reason:
+✓ Phone and Arduino agree
+✓ No movement detected for 12s
+✓ Heavy rain detected by Arduino
+✓ Water level rising
+✓ Device health nominal
+
+<!-- 📸 PASTE: Dashboard's live GenieX explanation panel -->
+
+🚦 Mission State Machine
+
+NORMAL → OBSERVE → SUSPICIOUS → DISTRESS → EMERGENCY
+
+The system never jumps straight from detection to alarm — it escalates deliberately, with hysteresis, and every transition is logged with the reasoning behind it.
+
+<!-- 📸 PASTE: Dashboard's state timeline / risk sparkline showing a full escalation sequence -->
+
+🖥️ Two Dashboards, Two Audiences
+
+DashboardAudienceFocusCommand Center (dashboard/app.py, port 8501)Judges / technical reviewFull telemetry, 3D pose visualization, trust-score breakdown, GenieX reasoningRescue Operations Center (dashboard/rescue_app.py, port 8502)Field first respondersLightweight, high-contrast, action-only view — live incident log, nothing else
+
+This split matters for the user-experience story: a swimmer's life doesn't depend on a responder parsing a dense engineering dashboard under pressure — it depends on one clear instruction, fast.  
+ Qualcomm Ecosystem Used
+
+ToolRoleQualcomm AI HubCompiled and profiled the phone's pose model against real target hardwareLiteRT / ONNX Runtime + QNNRuns pose estimation on the Hexagon NPUArduino UNO QEnvironmental sensing, local sensor fusion, emergency hardware controlGenieXGenerates the plain-English reasoning shown on the dashboardSarvam AIMultilingual (English / Hindi / Tamil / Kannada) spoken emergency alert, with offline TTS fallbackQualcomm AI Cloud 100Incident logging, analytics, heatmaps      Quick Start
+
+1. Android App
+
+bashcd Android-App
+./gradlew installDebug
+
+Settings → enter AI PC's local IPv4 address → WebSocket port 9090 → Apply.
+
+2. Arduino UNO Q
+
+Open in Arduino App Lab, wire sensors per Arduino-UNOQ/README.md, press Run.
+
+3. AI PC — Fusion Engine + Dashboards
+
+bash# Setup
+python -m venv .venv
+.venv\Scripts\activate          # Windows
+pip install -r AI-PC/fusion/requirements.txt
+
+# .env in AI-PC/ root
+SARVAM_API_KEY=your_api_key_here
+
+# Terminal 1 — Fusion Engine backend (WebSocket + REST, port 9090)
+python AI-PC/fusion/main.py
+
+# Terminal 2 — Command Center dashboard
+streamlit run AI-PC/dashboard/app.py --server.port 8501
+
+# Terminal 3 — Rescue Operations Center dashboard
+streamlit run AI-PC/dashboard/rescue_app.py --server.port 8502
+
+# Terminal 4 (optional) — Telemetry simulator, if phone/Arduino aren't connected
+python AI-PC/mock_client.py
 
 RiverGuardian asks a second question: "Can the system trust its own judgment right now — and how soon might it need to act?"
 
@@ -72,20 +147,3 @@ See. Predict. Verify. Protect.
 21 directories, 30 files
 ```
 
-## Credits 🤗
-
-- 🤓 Icons are from [flaticon.com](https://www.flaticon.com/) 
-- 🖌️ Design inspired from [AnimeXStream](https://github.com/mukul500/AnimeXStream) 
-- 💽 Data from [top250 API](https://github.com/theapache64/top250)
-- 📄 Thanks [Foodium](https://github.com/patilshreyas/Foodium)
-
-## TODO 🗒️
-
-  - [x] Improve algorithms and code review 
-  - [x] Add test cases
-  - [ ] Integrate OMDB API to add search feature
-  - [ ] Add favorites
-
-## Author ✍️
-
-- theapache64
