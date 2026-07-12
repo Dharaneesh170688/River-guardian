@@ -3,6 +3,7 @@
 
 Drowning is silent and fast. Most existing camera-based monitoring systems ask only one question: "Did the AI detect a drowning event?" They have no way to know if their own prediction can be trusted — rain, darkness, rising water, and device strain can all silently degrade a camera's confidence, leading to missed emergencies or false alarms. Wrong triggers waste rescue response; missed ones cost lives.
 
+![image alt](https://github.com/Dharaneesh170688/River-guardian/blob/f7460828e811d955f1ea0d5488eedcac7572e831/Screenshot_2026-07-12-12-48-17-95_0cf50405bf4e606ac561eec43039b08f.jpg)
 
 Traditional systems trust a single confidence number. RiverGuardian cross-checks independent signals and explicitly discounts any of them if compromised:
 
