@@ -17,6 +17,8 @@ Risk is trending up → the dashboard projects roughly how long until the next s
 EffectiveRisk = (0.50·PoseRisk + 0.20·WaterLevelRisk + 0.15·MovementRisk
                 + 0.10·RainRisk + 0.05·LightRisk) × HealthFactor
 
+![image alt](https://github.com/Dharaneesh170688/River-guardian/blob/e7f965475237bc065d08b9222ec0066684cad171/Screenshot_2026-07-12-12-48-56-95_0cf50405bf4e606ac561eec43039b08f.jpg)
+
 Nothing here is a black box. Every emergency decision comes with a human-readable justification, generated live by GenieX:
 
 textDecision: EMERGENCY
